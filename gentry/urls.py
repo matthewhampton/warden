@@ -14,7 +14,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^graphite', include('graphite.urls')),
+    url('^graphite/render/?', include('graphite.render.urls')),
     url(r'', include('sentry.conf.urls'))
 
 )

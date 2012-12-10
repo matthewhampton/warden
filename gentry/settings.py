@@ -1,9 +1,15 @@
-# Django settings for gentry project.
+"""
+GENTRY SETTINGS
+---------------
+"""
 
+
+from sentry.conf.server import *
 from sentry.conf.settings import *
 from graphite.settings import *
 
-print CONTENT_DIR
+
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,18 +18,21 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+CONF_ROOT = os.path.dirname(__file__)
+
 MANAGERS = ADMINS
-#
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#        'NAME': '',                      # Or path to database file if using sqlite3.
-#        'USER': '',                      # Not used with sqlite3.
-#        'PASSWORD': '',                  # Not used with sqlite3.
-#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-#    }
-#}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '/home/justinc/.gentry/gentry.db',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -107,23 +116,53 @@ ROOT_URLCONF = 'gentry.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'gentry.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.csrf',
+    'social_auth.context_processors.social_auth_backends',
+    'social_auth.context_processors.social_auth_by_name_backends',
+    'social_auth.context_processors.social_auth_by_type_backends',
+    'social_auth.context_processors.social_auth_login_redirect'
 )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+
+    # Sentry
+    'crispy_forms',
+    'djcelery',
+    'gunicorn',
+    'kombu.transport.django',
+    'raven.contrib.django',
+    'sentry',
+    'sentry.plugins.sentry_mail',
+    'sentry.plugins.sentry_servers',
+    'sentry.plugins.sentry_urls',
+    'sentry.plugins.sentry_user_emails',
+    'sentry.plugins.sentry_useragents',
+    'social_auth',
+    'south',
+    'django_social_auth_trello',
+
+    # Graphite
+    'graphite.metrics',
+    'graphite.render',
+    'graphite.cli',
+    'graphite.browser',
+    'graphite.composer',
+    'graphite.account',
+    'graphite.dashboard',
+    'graphite.whitelist',
+    'graphite.events',
+    'tagging'
 )
 
 # A sample logging configuration. The only tangible logging
