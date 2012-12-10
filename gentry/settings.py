@@ -1,5 +1,11 @@
-# Django settings for gentry project.
+"""
+GENTRY SETTINGS
+---------------
 
+
+"""
+
+import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -7,16 +13,19 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+CONF_ROOT = os.path.dirname(__file__)
+
 MANAGERS = ADMINS
 
+# All Sqlite3 defaults
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',                 # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': os.path.join(CONF_ROOT, 'gentry.db'),           # Or path to database file if using sqlite3.
+        'USER': '',                                             # Not used with sqlite3.
+        'PASSWORD': '',                                         # Not used with sqlite3.
+        'HOST': '',                                             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                                             # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -110,15 +119,27 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+
+    'crispy_forms',
+    'djcelery',
+    'gunicorn',
+    'kombu.transport.django',
+    'raven.contrib.django',
+    'sentry',
+    'sentry.plugins.sentry_mail',
+    'sentry.plugins.sentry_servers',
+    'sentry.plugins.sentry_urls',
+    'sentry.plugins.sentry_user_emails',
+    'sentry.plugins.sentry_useragents',
+    'social_auth',
+    'south',
+    'django_social_auth_trello',
 )
 
 # A sample logging configuration. The only tangible logging
