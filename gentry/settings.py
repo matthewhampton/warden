@@ -3,24 +3,15 @@ GENTRY SETTINGS
 ---------------
 """
 
-
-from sentry.conf.server import *
-from sentry.conf.settings import *
 from graphite.settings import *
+from sentry.conf.server import *
 
 
 import os
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
 
 CONF_ROOT = os.path.dirname(__file__)
-
-MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
@@ -33,72 +24,17 @@ DATABASES = {
     }
 }
 
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
-
-SITE_ID = 1
-
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
-USE_L10N = True
-
-# If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = ''
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'm$3q%n4q3#khc5nih2)83$c67d09&amp;iv6*&amp;kw$x#8l37--ye-g9'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -106,27 +42,19 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'sentry.middleware.SentryMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
 )
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'm$3q%n4q3#khc5nih2)83$c67d09&amp;iv6*&amp;kw$x#8l37--ye-g9'
 
 ROOT_URLCONF = 'gentry.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'gentry.wsgi.application'
-
-
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.csrf',
-    'social_auth.context_processors.social_auth_backends',
-    'social_auth.context_processors.social_auth_by_name_backends',
-    'social_auth.context_processors.social_auth_by_type_backends',
-    'social_auth.context_processors.social_auth_login_redirect'
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -193,3 +121,56 @@ LOGGING = {
         },
     }
 }
+
+SENTRY_KEY = 'Pn9/XwYOZhj/AmWN1tNvqG6D+/NBNHdasZAg+jb1xTD4SA3yZL1I7A=='
+
+# Set this to false to require authentication
+SENTRY_PUBLIC = True
+
+# You should configure the absolute URI to Sentry. It will attempt to guess it if you don't
+# but proxies may interfere with this.
+# SENTRY_URL_PREFIX = 'http://sentry.example.com'  # No trailing slash!
+
+SENTRY_WEB_SERVER = 'gunicorn'
+SENTRY_WEB_HOST = '0.0.0.0'
+SENTRY_WEB_PORT = 9000
+SENTRY_WEB_OPTIONS = {
+    'workers': 3,  # the number of gunicorn workers
+    # 'worker_class': 'gevent',
+}
+
+# Mail server configuration
+
+# For more information check Django's documentation:
+#  https://docs.djangoproject.com/en/1.3/topics/email/?from=olddocs#e-mail-backends
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+
+# http://twitter.com/apps/new
+# It's important that input a callback URL, even if its useless. We have no idea why, consult Twitter.
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
+# http://developers.facebook.com/setup/
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+
+# http://code.google.com/apis/accounts/docs/OAuth2.html#Registering
+GOOGLE_OAUTH2_CLIENT_ID = ''
+GOOGLE_OAUTH2_CLIENT_SECRET = ''
+
+# https://github.com/settings/applications/new
+GITHUB_APP_ID = ''
+GITHUB_API_SECRET = ''
+
+# https://trello.com/1/appKey/generate
+TRELLO_API_KEY = ''
+TRELLO_API_SECRET = ''
+
+USE_JS_CLIENT = True
