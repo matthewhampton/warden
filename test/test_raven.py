@@ -5,6 +5,6 @@ client  = Client('http://1ebbaaaf4a67410e8cb052d830cc082b:b2584562c7ff4e8fb5b26d
 
 client.captureMessage('Hello World')
 
-for i in range(100):
+for i in range(1000):
     client.captureMessage('Bing')
     time.sleep(0.1)
