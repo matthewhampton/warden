@@ -1,7 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from gentry import settings
+from gentry.wsgi import application
 from cherrypy import wsgiserver
-import gentry.wsgi
 
 
 class Command(BaseCommand):
@@ -13,7 +13,7 @@ class Command(BaseCommand):
         host = settings.SENTRY_WEB_HOST
         port = settings.SENTRY_WEB_PORT
 
-        server = wsgiserver.CherryPyWSGIServer((host, port), gentry.wsgi.application)
+        server = wsgiserver.CherryPyWSGIServer((host, port), application)
 
         try:
             print "Starting CherryPy server on %s:%s" % (host, port)
