@@ -65,8 +65,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
 
-    'gentry',
-
     # Sentry
     'crispy_forms',
     'djcelery',
