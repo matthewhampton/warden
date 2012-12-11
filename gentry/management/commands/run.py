@@ -1,27 +1,22 @@
-"""
-sentry.management.commands.start
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:copyright: (c) 2012 by the Sentry Team, see AUTHORS for more details.
-:license: BSD, see LICENSE for more details.
-"""
 from django.core.management.base import BaseCommand, CommandError
-import sys
+from gentry import settings
+from cherrypy import wsgiserver
+import gentry.wsgi
 
 
 class Command(BaseCommand):
     args = '<service>'
     help = 'Starts the specified service'
 
-
     def handle(self, *args, **options):
 
-        from cherrypy import wsgiserver
-        import gentry.wsgi
+        host = settings.SENTRY_WEB_HOST
+        port = settings.SENTRY_WEB_PORT
 
-        server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8000), gentry.wsgi.application)
+        server = wsgiserver.CherryPyWSGIServer((host, port), gentry.wsgi.application)
+
         try:
-            print "Starting CherryPy server..."
+            print "Starting CherryPy server on %s:%s" % (host, port)
             server.start()
         except KeyboardInterrupt:
             print "Shutting down CherryPy server..."

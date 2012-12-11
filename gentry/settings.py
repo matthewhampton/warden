@@ -132,13 +132,8 @@ SENTRY_PUBLIC = True
 # but proxies may interfere with this.
 # SENTRY_URL_PREFIX = 'http://sentry.example.com'  # No trailing slash!
 
-SENTRY_WEB_SERVER = 'gunicorn'
 SENTRY_WEB_HOST = '0.0.0.0'
-SENTRY_WEB_PORT = 9000
-SENTRY_WEB_OPTIONS = {
-    'workers': 3,  # the number of gunicorn workers
-    # 'worker_class': 'gevent',
-}
+SENTRY_WEB_PORT = 8000
 
 # Mail server configuration
 
