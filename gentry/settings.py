@@ -57,6 +57,7 @@ ROOT_URLCONF = 'gentry.urls'
 WSGI_APPLICATION = 'gentry.wsgi.application'
 
 INSTALLED_APPS = (
+    'gentry',
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.contenttypes',
