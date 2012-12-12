@@ -6,7 +6,7 @@ from distutils.core import setup
 setup_kwargs = dict()
 
 install_requires = [
-    'sentry>=5.0.21',
+    'sentry==5.0.21',
     'graphite-web>=0.9.10',
     'CherryPy>=3.2.2'
 ]
