@@ -13,10 +13,13 @@ DEBUG = True
 
 CONF_ROOT = os.path.dirname(__file__)
 
+# Change this to the path where the database file will be stored.
+DATA_ROOT = ''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'gentry.db',                        # Or path to database file if using sqlite3.
+        'NAME': os.path.join(DATA_ROOT, 'gentry.db'),   # Or path to database file if using sqlite3.
         'USER': '',                                 # Not used with sqlite3.
         'PASSWORD': '',                             # Not used with sqlite3.
         'HOST': '',                                 # Set to empty string for localhost. Not used with sqlite3.
