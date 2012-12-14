@@ -1,17 +1,15 @@
 """
-GENTRY SETTINGS
+gentry.settings
 ---------------
 """
 
 from graphite.settings import *
 from sentry.conf.server import *
-
-
 import os
 
-DEBUG = True
-
-CONF_ROOT = os.path.dirname(__file__)
+# A tuple of tuples containing the name and email of people to email when an error occurs.
+# ADMINS = (('John', 'john@smith.com'))
+ADMINS = ()
 
 # Change this to the path where the database file will be stored.
 DATA_ROOT = ''
@@ -27,14 +25,91 @@ DATABASES = {
     }
 }
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+# Make this unique, and don't share it with anybody.
+SENTRY_KEY = 'Pn9/XwYOZhj/AmWN1tNvqG6D+/NBNHdasZAg+jb1xTD4SA3yZL1I7A=='
+
+# Set this to false to require authentication
+SENTRY_PUBLIC = True
+
+# You should configure the absolute URI to Sentry. It will attempt to guess it if you don't
+# but proxies may interfere with this.
+# SENTRY_URL_PREFIX = 'http://sentry.example.com'  # No trailing slash!
+
+SENTRY_WEB_HOST = '0.0.0.0'
+SENTRY_WEB_PORT = 9000
+
+# Sentry mailer level
+SENTRY_MAIL_LEVEL = logging.ERROR
 
 
-# List of finder classes that know how to find static files in
-# various locations.
+# Mail server configuration
+
+# For more information check Django's documentation:
+#  https://docs.djangoproject.com/en/1.3/topics/email/?from=olddocs#e-mail-backends
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+
+# http://twitter.com/apps/new
+# It's important that input a callback URL, even if its useless. We have no idea why, consult Twitter.
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
+# http://developers.facebook.com/setup/
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+
+# http://code.google.com/apis/accounts/docs/OAuth2.html#Registering
+GOOGLE_OAUTH2_CLIENT_ID = ''
+GOOGLE_OAUTH2_CLIENT_SECRET = ''
+
+# https://github.com/settings/applications/new
+GITHUB_APP_ID = ''
+GITHUB_API_SECRET = ''
+
+# https://trello.com/1/appKey/generate
+TRELLO_API_KEY = ''
+TRELLO_API_SECRET = ''
+
+USE_JS_CLIENT = True
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+            },
+        }
+}
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! DONT TOUCH ANY SETTINGS AFTER THIS !!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -51,12 +126,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'm$3q%n4q3#khc5nih2)83$c67d09&amp;iv6*&amp;kw$x#8l37--ye-g9'
-
 ROOT_URLCONF = 'gentry.urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'gentry.wsgi.application'
 
 INSTALLED_APPS = (
@@ -99,79 +170,8 @@ INSTALLED_APPS = (
     'sentry_smtpforwarder',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
+CONF_ROOT = os.path.dirname(__file__)
 
-SENTRY_KEY = 'Pn9/XwYOZhj/AmWN1tNvqG6D+/NBNHdasZAg+jb1xTD4SA3yZL1I7A=='
+DEBUG = True
 
-# Set this to false to require authentication
-SENTRY_PUBLIC = True
-
-# You should configure the absolute URI to Sentry. It will attempt to guess it if you don't
-# but proxies may interfere with this.
-# SENTRY_URL_PREFIX = 'http://sentry.example.com'  # No trailing slash!
-
-SENTRY_WEB_HOST = '0.0.0.0'
-SENTRY_WEB_PORT = 8000
-
-# Mail server configuration
-
-# For more information check Django's documentation:
-#  https://docs.djangoproject.com/en/1.3/topics/email/?from=olddocs#e-mail-backends
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST = 'localhost'
-EMAIL_HOST_PASSWORD = ''
-EMAIL_HOST_USER = ''
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
-
-# http://twitter.com/apps/new
-# It's important that input a callback URL, even if its useless. We have no idea why, consult Twitter.
-TWITTER_CONSUMER_KEY = ''
-TWITTER_CONSUMER_SECRET = ''
-
-# http://developers.facebook.com/setup/
-FACEBOOK_APP_ID = ''
-FACEBOOK_API_SECRET = ''
-
-# http://code.google.com/apis/accounts/docs/OAuth2.html#Registering
-GOOGLE_OAUTH2_CLIENT_ID = ''
-GOOGLE_OAUTH2_CLIENT_SECRET = ''
-
-# https://github.com/settings/applications/new
-GITHUB_APP_ID = ''
-GITHUB_API_SECRET = ''
-
-# https://trello.com/1/appKey/generate
-TRELLO_API_KEY = ''
-TRELLO_API_SECRET = ''
-
-USE_JS_CLIENT = True
+MEDIA_URL = ''
