@@ -94,7 +94,9 @@ INSTALLED_APPS = (
     'graphite.dashboard',
     'graphite.whitelist',
     'graphite.events',
-    'tagging'
+    'tagging',
+
+    'sentry_smtpforwarder',
 )
 
 # A sample logging configuration. The only tangible logging
