@@ -22,7 +22,7 @@ setup(
         'sentry>=5.0.21',
         'graphite-web>=0.9.10',
         'CherryPy>=3.2.2',
-        'sentry_smtpforwarder==0.0.1',
+        'sentry_jsonmailprocessor',
         ],
     dependency_links=[
         'http://github.com/Supy/sentry-smtpforwarder/tarball/master#egg=sentry_smtpforwarder-0.0.1',
