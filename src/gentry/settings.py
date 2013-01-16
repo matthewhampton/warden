@@ -167,7 +167,7 @@ INSTALLED_APPS = (
     'graphite.events',
     'tagging',
 
-    'sentry_smtpforwarder',
+    'sentry_jsonmailprocessor',
 )
 
 CONF_ROOT = os.path.dirname(__file__)
