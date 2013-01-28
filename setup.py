@@ -17,7 +17,7 @@ setup(
     packages=find_packages('src'),
     scripts=glob('bin/*'),
     install_requires=[
-        'Django==1.4.2',
+        'Django==1.4.3',
         'django-tagging==0.3.1',
         'sentry>=5.0.21',
         'graphite-web==0.9.10-warden',
