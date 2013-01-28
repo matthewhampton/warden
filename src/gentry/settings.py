@@ -2,9 +2,13 @@
 gentry.settings
 ---------------
 """
-
+from sentry.conf.server import MIDDLEWARE_CLASSES as SENTRY_MIDDLEWARE_CLASSES 
+from graphite.settings import  MIDDLEWARE_CLASSES as GRAPHITE_MIDDLEWARE_CLASSES
+from sentry.conf.server import INSTALLED_APPS as SENTRY_INSTALLED_APPS
+from graphite.settings import INSTALLED_APPS as GRAPHITE_INSTALLED_APPS
 from graphite.settings import *
 from sentry.conf.server import *
+import logging
 import os
 
 # A tuple of tuples containing the name and email of people to email when an error occurs.
@@ -110,65 +114,14 @@ LOGGING = {
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # !!! DONT TOUCH ANY SETTINGS AFTER THIS !!!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'sentry.middleware.SentryMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.gzip.GZipMiddleware',
-)
+MIDDLEWARE_CLASSES = tuple(set(SENTRY_MIDDLEWARE_CLASSES).union(set(GRAPHITE_MIDDLEWARE_CLASSES)))
+
+INSTALLED_APPS = ('gentry', 'sentry_jsonmailprocessor') + tuple(set(SENTRY_INSTALLED_APPS).union(set(GRAPHITE_INSTALLED_APPS)))
 
 ROOT_URLCONF = 'gentry.urls'
 
 WSGI_APPLICATION = 'gentry.wsgi.application'
-
-INSTALLED_APPS = (
-    'gentry',
-    'django.contrib.auth',
-    'django.contrib.admin',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-
-    # Sentry
-    'crispy_forms',
-    'djcelery',
-    'gunicorn',
-    'kombu.transport.django',
-    'raven.contrib.django',
-    'sentry',
-    'sentry.plugins.sentry_mail',
-    'sentry.plugins.sentry_servers',
-    'sentry.plugins.sentry_urls',
-    'sentry.plugins.sentry_user_emails',
-    'sentry.plugins.sentry_useragents',
-    'social_auth',
-    'south',
-    'django_social_auth_trello',
-
-    # Graphite
-    'graphite.metrics',
-    'graphite.render',
-    'graphite.cli',
-    'graphite.browser',
-    'graphite.composer',
-    'graphite.account',
-    'graphite.dashboard',
-    'graphite.whitelist',
-    'graphite.events',
-    'tagging',
-
-    'sentry_jsonmailprocessor',
-)
 
 CONF_ROOT = os.path.dirname(__file__)
 
