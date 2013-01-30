@@ -19,7 +19,7 @@ setup(
     install_requires=[
         'Django==1.4.3',
         'django-tagging==0.3.1',
-        'sentry>=5.0.21',
+        'sentry==5.2.2',
         'graphite-web==0.9.10-warden',
         'CherryPy>=3.2.2',
         'sentry_jsonmailprocessor',
