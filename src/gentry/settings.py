@@ -115,7 +115,11 @@ LOGGING = {
 # !!! DONT TOUCH ANY SETTINGS AFTER THIS !!!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-MIDDLEWARE_CLASSES = tuple(set(SENTRY_MIDDLEWARE_CLASSES).union(set(GRAPHITE_MIDDLEWARE_CLASSES)))
+# Combine the middleware classes. We don't use sets here because the order matters and sets just don't respect that.
+# There is conceivably a problem if the GRAPHITE_MIDDLEWARE_CLASSES that overlap with the
+# SENTRY_MIDDLEWARE_CLASSES appear in a different order in the SENTRY_MIDDLEWARE_CLASSES list, 
+# but that is not the case with the current versions, so we are alright.
+MIDDLEWARE_CLASSES = list(SENTRY_MIDDLEWARE_CLASSES) + [cls for cls in GRAPHITE_MIDDLEWARE_CLASSES if cls not in SENTRY_MIDDLEWARE_CLASSES]
 
 INSTALLED_APPS = ('gentry', 'sentry_jsonmailprocessor') + tuple(set(SENTRY_INSTALLED_APPS).union(set(GRAPHITE_INSTALLED_APPS)))
 
