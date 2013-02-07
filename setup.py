@@ -25,7 +25,7 @@ setup(
         'sentry_jsonmailprocessor',
         ],
     dependency_links=[
-        'http://github.com/Supy/sentry_jsonmailprocessor/tarball/master#egg=sentry_jsonmailprocessor-0.0.1',
+        'http://github.com/richg/sentry_jsonmailprocessor/tarball/master#egg=sentry_jsonmailprocessor-0.0.1',
         'http://github.com/richg/graphite-web/tarball/0.9.x-warden#egg=graphite-web-0.9.10-warden'
         ],
     **setup_kwargs
