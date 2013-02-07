@@ -8,7 +8,7 @@ setup_kwargs = dict()
 setup(
     name='gentry',
     version='0.0.1',
-    url='https://github.com/Supy/gentry',
+    url='https://github.com/richg/gentry',
     author='StJames Software',
     author_email='richardg@sjsoft.com',
     license='Apache Software License 2.0',
