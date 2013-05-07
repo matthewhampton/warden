@@ -16,7 +16,7 @@ import os
 ADMINS = ()
 
 # Change this to the path where the database file will be stored.
-DATA_ROOT = ''
+DATA_ROOT = os.path.join(os.path.expanduser('~'), 'gentry')
 
 DATABASES = {
     'default': {
