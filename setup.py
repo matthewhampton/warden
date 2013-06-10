@@ -28,13 +28,13 @@ Warden uses Diamond to collect stats. Using Diamond's plug-in Collectors archite
 """,
     author           = 'Richard Graham',
     author_email     = 'support@sjsoft.com',
-    packages         = ['warden', 'warden.smtp_forwarder'],
+    packages         = ['warden', 'warden.smtp_forwarder', 'gentry', 'gentry.management', 'gentry.management.commands'],
     package_dir={'' : 'src'},
     data_files=[ ('conf', glob('conf/*.example')) ],
+    scripts=glob('bin/*'),
     zip_safe = False,
     install_requires = [
           'carbon==0.9.10-warden',
-          'gentry==0.0.1',
           'diamond'],
     dependency_links = [
         'http://github.com/richg/gentry/tarball/master#egg=gentry-0.0.1',
