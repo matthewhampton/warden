@@ -35,10 +35,12 @@ Warden uses Diamond to collect stats. Using Diamond's plug-in Collectors archite
     zip_safe = False,
     install_requires = [
           'carbon==0.9.10-warden',
-          'diamond'],
-    dependency_links = [
-        'http://github.com/richg/gentry/tarball/master#egg=gentry-0.0.1',
-        'http://github.com/richg/carbon/tarball/0.9.x-warden#egg=carbon-0.9.10-warden',
+          'diamond',
+          'sentry-jsonmailprocessor==0.0.2',
+          ],
+    dependency_links=[
+        'http://github.com/richg/sentry_jsonmailprocessor/tarball/master#egg=sentry-jsonmailprocessor==0.0.2',
+        'http://github.com/richg/carbon/tarball/0.9.x-warden#egg=carbon==0.9.10-warden',
         'http://github.com/richg/Diamond/tarball/master#egg=diamond'
     ],
     keywords         = 'sentry carbon graphite monitoring',
