@@ -8,17 +8,17 @@ loglevel = DEBUG
 [diamond]
 
 # Path to diamond.conf
-configuration = ~/.diamond/etc/diamond/diamond.conf
+configuration = diamond/diamond.conf
 # Logging level of diamond. this produces a lot of logs if set to info/debug
 loglevel = ERROR
 # Path to diamond_root
-diamond_root = ~/.diamond
+diamond_root = diamond
 
 
 [gentry]
 
 # Path to the gentry settings.py file
-gentry_settings_py_path = /usr/local/lib/python2.7/site-packages/gentry/settings.py
+gentry_settings_py_path = gentry_settings.py
 
 # Sentry super user, added to the database during warden-setup time
 super_user      = 'user'
@@ -28,11 +28,12 @@ project         = 'myproject'
 
 [carbon]
 
-# the path to the carbon config is derived from the GRAPHITE_ROOT unless defined here
-configuration = ~/.graphite/conf/carbon.conf
-
 # path to graphite root
-graphite_root = ~/.graphite
+graphite_root = graphite
+
+# the path to the carbon config is derived from the GRAPHITE_ROOT unless defined here
+#configuration = graphite/conf/carbon.conf
+
 
 [smtp_forwarder]
 
