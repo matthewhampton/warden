@@ -31,7 +31,7 @@ def get_req(requirements, package_name):
         return str(requirements[package_name].req)
 
 
-def install_libraries(home, run=None, pip=None, lib=None, scripts=None, prefix=None, requirements=None):
+def install_libraries(run=None, pip=None, lib=None, scripts=None, prefix=None, data=None, requirements=None):
     requirements = requirements or get_requirements()
     if not 'PIP_DOWNLOAD_CACHE' in os.environ:
         os.environ['PIP_DOWNLOAD_CACHE'] = 'cache'
@@ -45,6 +45,8 @@ def install_libraries(home, run=None, pip=None, lib=None, scripts=None, prefix=N
         prefix=sys.exec_prefix
     if scripts is None:
         scripts=os.path.join(prefix,'Scripts') if 'win' in sys.platform else os.path.join(prefix,'bin')
+
+    data = data or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templateconf')
 
     def pipping_easy_install(package_name):
         v = installed_version(package_name)
@@ -78,20 +80,20 @@ def install_libraries(home, run=None, pip=None, lib=None, scripts=None, prefix=N
          '--install-option=--install-scripts=%s' % scripts,
          '--install-option=--prefix=%s' % prefix,
          '--install-option=--install-lib=%s' % lib,
-         '--install-option=--install-data=%s' % (os.path.join(home, 'graphite')))
+         '--install-option=--install-data=%s' % (os.path.join(data, 'graphite')))
 
     pip_install("carbon",
          '--install-option=--install-scripts=%s' % scripts,
          '--install-option=--prefix=%s' % prefix,
          '--install-option=--install-lib=%s' % lib,
-         '--install-option=--install-data=%s' % (os.path.join(home, 'graphite')))
+         '--install-option=--install-data=%s' % (os.path.join(data, 'graphite')))
 
-    os.environ['DIAMOND_CONFIG_DIR'] = os.path.join(home, 'diamond')
+    os.environ['DIAMOND_CONFIG_DIR'] = os.path.join(data, 'diamond')
     pip_install("diamond",
          '--install-option=--prefix=%s' % prefix,
          '--install-option=--install-scripts=%s' % scripts,
          '--install-option=--install-lib=%s' % lib,
-         '--install-option=--install-data=%s' % (os.path.join(home, 'diamond')))
+         '--install-option=--install-data=%s' % (os.path.join(data, 'diamond')))
 
     pip_install("Django")
 
@@ -99,7 +101,7 @@ def install_libraries(home, run=None, pip=None, lib=None, scripts=None, prefix=N
          '--install-option=--install-scripts=%s' % scripts,
          '--install-option=--prefix=%s' % prefix,
          '--install-option=--install-lib=%s' % lib,
-         '--install-option=--install-data=%s' % (os.path.join(home, 'graphite')))
+         '--install-option=--install-data=%s' % (os.path.join(data, 'graphite')))
 
     pip_install("CherryPy")
 
@@ -107,15 +109,11 @@ def install_libraries(home, run=None, pip=None, lib=None, scripts=None, prefix=N
 
     pip_install("sentry-jsonmailprocessor")
 
-    pip_install("warden",
-         '--install-option=--install-data=%s' % home)
-
 
 def main():
     parser = argparse.ArgumentParser(description='Warden installer')
-    parser.add_argument('home', nargs=1, help="Install the data in to this folder.")
     args = parser.parse_args()
-    install_libraries(args.home[0])
+    install_libraries()
 
 if __name__ == '__main__':
     main()
