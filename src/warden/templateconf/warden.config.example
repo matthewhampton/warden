@@ -32,7 +32,7 @@ project         = 'myproject'
 graphite_root = graphite
 
 # the path to the carbon config is derived from the GRAPHITE_ROOT unless defined here
-#configuration = graphite/conf/carbon.conf
+configuration = graphite/conf/carbon.conf
 
 
 [smtp_forwarder]

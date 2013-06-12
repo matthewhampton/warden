@@ -11,7 +11,7 @@ ADMINS = ()
 DATABASES = get_databases(os.path.dirname(__file__))
 
 # Make this unique, and don't share it with anybody.
-SENTRY_KEY = __NEW_SENTRY_KEY__
+__SENTRY_KEY__
 
 # Set this to false to require authentication
 SENTRY_PUBLIC = True

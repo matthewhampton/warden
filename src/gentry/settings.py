@@ -17,7 +17,7 @@ ADMINS = ()
 
 def get_databases(warden_home):
     # Change this to the path where the database file will be stored.
-    _data_root = os.path.join(warden_home, 'gentry')
+    _data_root = os.path.abspath(os.path.join(warden_home, 'gentry'))
 
     return {
         'default': {
