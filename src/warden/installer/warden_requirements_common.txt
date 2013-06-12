@@ -5,5 +5,6 @@ zope.interface
 Django==1.4.3
 sentry==5.2.2
 CherryPy==3.2.2
+configobj
 http://github.com/richg/sentry_jsonmailprocessor/tarball/master#egg=sentry_jsonmailprocessor==0.0.1
 -r warden_requirements_patched.txt

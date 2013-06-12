@@ -75,6 +75,7 @@ def install_libraries(run=None, pip=None, lib=None, scripts=None, prefix=None, d
         pip_install("python-daemon")
         pip_install("lockfile")
 
+    pip_install("configobj")
 
     pip_install("whisper",
          '--install-option=--install-scripts=%s' % scripts,
