@@ -112,7 +112,6 @@ def install_libraries(home, run=None, pip=None, lib=None, scripts=None, prefix=N
 
 
 def main():
-    get_requirements()
     parser = argparse.ArgumentParser(description='Warden installer')
     parser.add_argument('home', nargs=1, help="Install the data in to this folder.")
     args = parser.parse_args()
