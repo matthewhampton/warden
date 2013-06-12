@@ -1,0 +1,6 @@
+file://e:\work\git\whisper#egg=whisper==0.9.10-warden
+file://e:\work\git\carbon#egg=carbon==0.9.10-warden
+file://e:\work\git\Diamond#egg=diamond
+file://e:\work\git\graphite-web#egg=graphite-web==0.9.10-warden
+file://e:\work\git\sentry-jsonmailprocessor#egg=sentry-jsonmailprocessor==0.0.2
+file://e:\work\git\warden#egg=warden

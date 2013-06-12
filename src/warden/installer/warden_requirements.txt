@@ -1,0 +1,4 @@
+python-daemon
+lockfile
+http://cairographics.org/releases/py2cairo-1.8.10.tar.gz#egg=pycairo==1.8.10
+-r warden_requirements_common.txt
