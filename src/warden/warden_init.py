@@ -8,6 +8,7 @@ AFTER A NEW INSTALL OF WARDEN (using setup.py) we need to get the system ready f
             check if database exists... clear...syncdb...migrate etc..
 """
 import getpass
+from warden.AutoConf import autoconf
 from warden_logging import log
 import os
 import sys
@@ -17,37 +18,10 @@ import textwrap
 import re
 from django.core import management
 from distutils import dir_util, file_util
-from warden_utils import relative_to_config_file
 
-
-def file_exists(path):
-    return os.path.exists(path)
-
-def ensure(
-        carbon_conf,
-        diamond_conf,
-        gentry_settings,
-        super_user = None,
-        project_name = None
-):
-    if carbon_conf is not None and not file_exists(carbon_conf):
-        log.error('The Carbon configuration "%s" does not exist. Aborting.' % carbon_conf)
-        return False
-
-    if diamond_conf is not None and not file_exists(diamond_conf):
-        log.error('The Diamond configuration "%s" does not exist. Aborting.' % diamond_conf)
-        return False
-
-    if gentry_settings is not None and not file_exists(gentry_settings):
-        log.error('The Gentry settings module "%s" does not exist. Aborting.' % gentry_settings)
-        return False
-
-    return setup(carbon_conf, diamond_conf, gentry_settings, super_user, project_name)
 
 def setup(
-        carbon_conf,
-        diamond_conf,
-        gentry_settings,
+        home,
         super_user,
         project_name
 ):
@@ -55,30 +29,7 @@ def setup(
     Warden uses values from its default settings file UNLESS explicitely defined
     here in the constructor.
     """
-    # GENTRY
-
-    sentry_key = base64.b64encode(os.urandom(40))
-
-    # write key into settings file
-    try:
-        new_lines = []
-        with open(gentry_settings) as f:
-            old_lines = f.readlines()
-            for line in old_lines:
-                if line.startswith('__SENTRY_KEY__'):
-                    nline = 'SENTRY_KEY=\'' + str(sentry_key) + '\'\n'
-                    log.info( 'Rewriting "%s" -> "%s"' % (line.strip(), nline.strip()))
-                else:
-                    nline = line
-                new_lines.append(nline)
-        if len(new_lines) > 0:
-            log.info('Writing new Sentry_key into settings module "%s"' % gentry_settings)
-            with open(gentry_settings, 'wb') as f:
-                f.writelines(new_lines)
-                f.flush()
-                f.close()
-    except IOError:
-        log.exception('Could not write gentry_settings module: "%s"' % gentry_settings)
+    gentry_settings = os.path.abspath(os.path.join(home, 'gentry_settings.py'))
 
     if gentry_settings is None:
         os.environ['DJANGO_SETTINGS_MODULE'] = 'gentry.settings'
@@ -289,30 +240,11 @@ def main():
 
     dir_util.copy_tree(os.path.join(os.path.dirname(__file__), 'templateconf'), home)
 
-    warden_configuration_file = os.path.join(home, 'warden.config')
-
-    if not os.path.exists(warden_configuration_file):
-        file_util.copy_file(warden_configuration_file + '.example', warden_configuration_file)
-
-    configuration = ConfigParser.RawConfigParser()
-    configuration.read(warden_configuration_file)
-
-    carbon_conf = relative_to_config_file(warden_configuration_file, configuration.get('carbon','configuration'))
-    if not os.path.exists(carbon_conf):
-        file_util.copy_file(os.path.join(home, 'graphite', 'conf', 'carbon.conf.example'), carbon_conf)
-
-
-    diamond_conf = relative_to_config_file(warden_configuration_file, configuration.get('diamond','configuration'))
-    if not os.path.exists(diamond_conf):
-        file_util.copy_file(os.path.join(home, 'diamond', 'diamond.conf.example'), diamond_conf)
-
-    gentry_settings = relative_to_config_file(warden_configuration_file, configuration.get('gentry', 'gentry_settings_py_path'))
-    if not os.path.exists(gentry_settings):
-        file_util.copy_file(os.path.join(home, 'gentry_settings.py.example'), gentry_settings)
+    autoconf(home)
 
     suser = (args.super_user, args.super_password, args.super_email)
 
-    ensure(carbon_conf,diamond_conf,gentry_settings, suser, args.first_project)
+    setup(home, suser, args.first_project)
 
 if __name__ == '__main__':
     main()
