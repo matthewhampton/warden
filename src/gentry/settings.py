@@ -15,19 +15,20 @@ import os
 # ADMINS = (('John', 'john@smith.com'))
 ADMINS = ()
 
-# Change this to the path where the database file will be stored.
-DATA_ROOT = os.path.join(os.path.expanduser('~'), 'gentry')
+def get_databases(warden_home):
+    # Change this to the path where the database file will be stored.
+    _data_root = os.path.join(warden_home, 'gentry')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(DATA_ROOT, 'gentry.db'),   # Or path to database file if using sqlite3.
-        'USER': '',                                 # Not used with sqlite3.
-        'PASSWORD': '',                             # Not used with sqlite3.
-        'HOST': '',                                 # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                                 # Set to empty string for default. Not used with sqlite3.
+    return {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': os.path.join(_data_root, 'gentry.db'),   # Or path to database file if using sqlite3.
+            'USER': '',                                 # Not used with sqlite3.
+            'PASSWORD': '',                             # Not used with sqlite3.
+            'HOST': '',                                 # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',                                 # Set to empty string for default. Not used with sqlite3.
+        }
     }
-}
 
 # Make this unique, and don't share it with anybody.
 SENTRY_KEY = 'Pn9/XwYOZhj/AmWN1tNvqG6D+/NBNHdasZAg+jb1xTD4SA3yZL1I7A=='
