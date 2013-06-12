@@ -29,15 +29,7 @@ def setup(
     Warden uses values from its default settings file UNLESS explicitely defined
     here in the constructor.
     """
-    gentry_settings = os.path.abspath(os.path.join(home, 'gentry_settings.py'))
-
-    if gentry_settings is None:
-        os.environ['DJANGO_SETTINGS_MODULE'] = 'gentry.settings'
-    else:
-        n = 'j5_warden_gentry_settings'
-        os.environ['DJANGO_SETTINGS_MODULE'] = n
-        if not sys.modules.has_key(n):
-            imp.load_source(n, gentry_settings)
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'gentry.settings'
 
     log.info ('$DJANGO_SETTINGS_MODULE = %s' % os.environ['DJANGO_SETTINGS_MODULE'])
     from django.conf import settings as gsetts
@@ -237,6 +229,7 @@ def main():
             setattr(args, dest, prompt('Enter %s:' % (help), password='password' in arg))
 
     home = args.home[0]
+    os.environ['WARDEN_HOME'] = home
 
     dir_util.copy_tree(os.path.join(os.path.dirname(__file__), 'templateconf'), home)
 

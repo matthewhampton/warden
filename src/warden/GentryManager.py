@@ -13,13 +13,7 @@ class GentryManager:
 
         log.debug('Initialising Gentry..')
 
-        if gentry_settings_file is None:
-            os.environ['DJANGO_SETTINGS_MODULE'] = 'gentry.settings'
-        else:
-            n = 'j5_warden_gentry_settings'
-            os.environ['DJANGO_SETTINGS_MODULE'] = n
-            if not sys.modules.has_key(n):
-                imp.load_source(n, warden_utils.normalize_path(gentry_settings_file))
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'gentry.settings'
 
         log.debug('$DJANGO_SETTINGS_MODULE = %s' % os.environ['DJANGO_SETTINGS_MODULE'])
         from django.conf import settings

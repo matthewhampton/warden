@@ -10,28 +10,26 @@ from graphite.settings import *
 from sentry.conf.server import *
 import logging
 import os
+from warden.AutoConf import get_warden_conf
+
 
 # A tuple of tuples containing the name and email of people to email when an error occurs.
 # ADMINS = (('John', 'john@smith.com'))
 ADMINS = ()
 
-def get_databases(warden_home):
-    # Change this to the path where the database file will be stored.
-    _data_root = os.path.abspath(os.path.join(warden_home, 'gentry'))
-
-    return {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': os.path.join(_data_root, 'gentry.db'),   # Or path to database file if using sqlite3.
-            'USER': '',                                 # Not used with sqlite3.
-            'PASSWORD': '',                             # Not used with sqlite3.
-            'HOST': '',                                 # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',                                 # Set to empty string for default. Not used with sqlite3.
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': os.path.join(os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'gentry')), 'gentry.db'),   # Or path to database file if using sqlite3.
+        'USER': '',                                 # Not used with sqlite3.
+        'PASSWORD': '',                             # Not used with sqlite3.
+        'HOST': '',                                 # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                                 # Set to empty string for default. Not used with sqlite3.
     }
+}
 
 # Make this unique, and don't share it with anybody.
-#SENTRY_KEY = e.g. 'Pn9/XwYOZhj/AmWN1tNvqG6D+/NBNHdasZAg+jb1xTD4SA3yZL1I7A=='
+SENTRY_KEY = get_warden_conf()['gentry']['sentry_key']
 
 # Set this to false to require authentication
 SENTRY_PUBLIC = True
