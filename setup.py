@@ -1,6 +1,7 @@
 from setuptools import setup
 import re
 from glob import glob
+import os
 
 def get_version():
     VERSIONFILE="src/warden/__init__.py"
@@ -36,8 +37,9 @@ Warden uses Diamond to collect stats. Using Diamond's plug-in Collectors archite
         'gentry.management',
         'gentry.management.commands'],
     package_dir={'' : 'src'},
-    package_data={'warden.installer': ['warden_requirements*.txt']},
-    data_files=[ ('conf', glob('conf/*.example')) ],
+    package_data={
+        'warden': [os.path.join('templateconf','*')],
+        'warden.installer': ['warden_requirements*.txt']},
     scripts=glob('bin/*'),
     zip_safe = False,
     #Please refer to src/warden/installer for the dependencies... We need to install them carefully
