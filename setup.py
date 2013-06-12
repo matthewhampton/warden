@@ -28,27 +28,27 @@ Warden uses Diamond to collect stats. Using Diamond's plug-in Collectors archite
 """,
     author           = 'Richard Graham',
     author_email     = 'support@sjsoft.com',
-    packages         = ['warden', 'warden.smtp_forwarder', 'gentry', 'gentry.management', 'gentry.management.commands'],
+    packages         = [
+        'warden',
+        'warden.smtp_forwarder',
+        'warden.installer',
+        'gentry',
+        'gentry.management',
+        'gentry.management.commands'],
     package_dir={'' : 'src'},
+    package_data={'warden.installer': ['warden_requirements*.txt']},
     data_files=[ ('conf', glob('conf/*.example')) ],
     scripts=glob('bin/*'),
     zip_safe = False,
-    install_requires = [
-          'carbon==0.9.10-warden',
-          'diamond',
-          'sentry-jsonmailprocessor==0.0.2',
-          ],
-    dependency_links=[
-        'http://github.com/richg/sentry_jsonmailprocessor/tarball/master#egg=sentry-jsonmailprocessor==0.0.2',
-        'http://github.com/richg/carbon/tarball/0.9.x-warden#egg=carbon==0.9.10-warden',
-        'http://github.com/richg/Diamond/tarball/master#egg=diamond'
-    ],
+    #Please refer to src/warden/installer for the dependencies... We need to install them carefully
+    install_requires = [],
     keywords         = 'sentry carbon graphite monitoring',
     url              = 'https://github.com/richg/warden',
     entry_points     = {
           'console_scripts': [
               'warden = warden.WardenServer:main',
-              'warden_setup = warden.warden_setup:main'
+              'warden_install = warden.installer.Installer:main',
+              'warden_init = warden.warden_init:main'
           ]
     },
     classifiers      = [
