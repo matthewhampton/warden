@@ -18,6 +18,11 @@ def normalize_path(path):
     path = os.path.abspath(path)
     return path
 
+def relative_to_config_file(conf_file, value):
+    value = value.replace('/', os.path.sep)
+    if os.path.isabs(value):
+        return value
+    return os.path.join(os.path.dirname(conf_file), value)
 
 class StartupException(Exception):
     def __init__(self, m):

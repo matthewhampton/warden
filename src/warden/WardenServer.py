@@ -4,14 +4,12 @@ import signal
 import time
 import ConfigParser
 import logging
-import daemon
-from lockfile import pidlockfile
 from CarbonManager import CarbonManager
 from GentryManager import GentryManager
 from DiamondManager import DiamondManager
 from SMTPForwarderManager import SMTPForwarderManager
 from warden_logging import log
-from warden_utils import StartupException
+from warden_utils import StartupException, relative_to_config_file
 import datetime
 
 class WardenServer(object):
@@ -81,17 +79,17 @@ class WardenServer(object):
         try:
             # initialise Carbon, daemon services are setup here, but the event reactor is not yet run
             self.carbon = CarbonManager(
-                self.configuration.get('carbon', 'graphite_root'),
-                self.configuration.get('carbon', 'configuration'))
+                relative_to_config_file(warden_configuration_file, self.configuration.get('carbon', 'graphite_root')),
+                relative_to_config_file(warden_configuration_file, self.configuration.get('carbon', 'configuration')))
 
             # initialise Gentry, this will also perform database manipulation for Sentry
             self.gentry = GentryManager(
-                self.configuration.get('gentry', 'gentry_settings_py_path'))
+                relative_to_config_file(warden_configuration_file, self.configuration.get('gentry', 'gentry_settings_py_path')))
 
             # initialise Diamond, not much is required here
             self.diamond = DiamondManager(
-                self.configuration.get('diamond', 'diamond_root'),
-                self.configuration.get('diamond', 'configuration'),
+                relative_to_config_file(warden_configuration_file, self.configuration.get('diamond', 'diamond_root')),
+                relative_to_config_file(warden_configuration_file, self.configuration.get('diamond', 'configuration')),
                 getattr(logging, self.configuration.get('diamond','loglevel')))
 
             if self.configuration.getboolean('smtp_forwarder', 'enabled'):
@@ -244,6 +242,8 @@ def main():
         sys.exit(1)
     if args.pid_file:
         pid_file = os.path.abspath(os.path.expanduser(args.pid_file))
+        import daemon
+        from lockfile import pidlockfile
         context = daemon.DaemonContext(pidfile=pidlockfile.PIDLockFile(pid_file))
         with context:
             warden_server = WardenServer(warden_configuration_file = warden_configuration_file)

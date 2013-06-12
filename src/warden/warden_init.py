@@ -17,6 +17,7 @@ import textwrap
 import re
 from django.core import management
 from distutils import dir_util, file_util
+from warden_utils import relative_to_config_file
 
 
 def file_exists(path):
@@ -261,12 +262,6 @@ def prompt(text, default='', validate=None, password=False):
                     # Reset value so we stay in the loop
                     value = None
     return value
-
-def relative_to_config_file(conf_file, value):
-    value = value.replace('/', os.path.sep)
-    if os.path.isabs(value):
-        return value
-    return os.path.join(os.path.dirname(conf_file), value)
 
 def main():
     import argparse
