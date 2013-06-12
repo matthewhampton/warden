@@ -31,7 +31,7 @@ def get_databases(warden_home):
     }
 
 # Make this unique, and don't share it with anybody.
-SENTRY_KEY = None
+#SENTRY_KEY = e.g. 'Pn9/XwYOZhj/AmWN1tNvqG6D+/NBNHdasZAg+jb1xTD4SA3yZL1I7A=='
 
 # Set this to false to require authentication
 SENTRY_PUBLIC = True
