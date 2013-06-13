@@ -38,13 +38,18 @@ def get_warden_conf():
 
     return ConfigObj(warden_configuration_file)
 
+def home_path(*args):
+    return os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], *args))
+
 def diamond_conf(wardenconf, conf):
-    conf['server']['collectors_path'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'share', 'diamond', 'collectors'))
-    conf['server']['collectors_config_path'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'collectors'))
-    conf['server']['handlers_config_path'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'handlers'))
-    conf['server']['pid_file'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'diamond.pid'))
-    conf['handlers']['ArchiveHandler']['log_file'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'log', 'diamond_archive.log'))
-    conf['handler_rotated_file']['args'] = (os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'log', 'diamond.log')), 'midnight', 1, 7)
+    conf['server']['collectors_path'] = home_path('diamond', 'share', 'diamond', 'collectors')
+    conf['server']['collectors_config_path'] = home_path('diamond', 'collectors')
+    conf['server']['handlers_config_path'] = home_path('diamond', 'handlers')
+    conf['server']['pid_file'] = home_path('diamond', 'diamond.pid')
+    conf['handlers']['ArchiveHandler']['log_file'] = home_path('log', 'diamond_archive.log')
+    conf['handler_rotated_file']['args'] = (home_path('log', 'diamond.log'), 'midnight', 1, 7)
+
+
 
 def autoconf(home):
     os.environ['WARDEN_HOME'] = home
