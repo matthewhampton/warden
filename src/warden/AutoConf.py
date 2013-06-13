@@ -48,11 +48,15 @@ def diamond_conf(wardenconf, conf):
     conf['server']['pid_file'] = home_path('diamond', 'diamond.pid')
     conf['handlers']['ArchiveHandler']['log_file'] = home_path('log', 'diamond_archive.log')
     conf['handler_rotated_file']['args'] = (home_path('log', 'diamond.log'), 'midnight', 1, 7)
-
+    conf['handlers']['GraphiteHandler']['host'] = 'localhost'
+    conf['handlers']['GraphiteHandler']['port'] = 2023
+    conf['handlers']['GraphitePickleHandler']['host'] = 'localhost'
+    conf['handlers']['GraphitePickleHandler']['port'] = 2024
 
 
 def autoconf(home):
     os.environ['WARDEN_HOME'] = home
+    os.environ['GRAPHITE_ROOT'] = home_path('graphite')
 
     config = get_warden_conf()
 
