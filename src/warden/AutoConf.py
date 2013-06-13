@@ -20,11 +20,13 @@ def merge(left, right):
         else:
             left[key] = val
 
-def merge_conf(conf_path, conf_section):
+def merge_conf(conf_path, conf_section, wardenconf=None, autoconffunc=None):
     if os.path.exists(conf_path):
         os.remove(conf_path)
     file_util.copy_file(conf_path + '.example', conf_path)
     conf = ConfigObj(conf_path)
+    if autoconffunc:
+        autoconffunc(wardenconf, conf)
     merge(conf, conf_section)
     conf.write()
 
@@ -35,6 +37,14 @@ def get_warden_conf():
         file_util.copy_file(warden_configuration_file + '.example', warden_configuration_file)
 
     return ConfigObj(warden_configuration_file)
+
+def diamond_conf(wardenconf, conf):
+    conf['server']['collectors_path'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'share', 'diamond', 'collectors'))
+    conf['server']['collectors_config_path'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'collectors'))
+    conf['server']['handlers_config_path'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'handlers'))
+    conf['server']['pid_file'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'diamond', 'diamond.pid'))
+    conf['handlers']['ArchiveHandler']['log_file'] = os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'log', 'diamond_archive.log'))
+    conf['handler_rotated_file']['args'] = (os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], 'log', 'diamond.log')), 'midnight', 1, 7)
 
 def autoconf(home):
     os.environ['WARDEN_HOME'] = home
@@ -52,7 +62,7 @@ def autoconf(home):
     for section in config:
         if section == 'diamond.conf':
             conf_path = os.path.abspath(os.path.join(home, 'diamond', section))
-            merge_conf(conf_path, config[section])
+            merge_conf(conf_path, config[section], config, diamond_conf)
 
         elif section.endswith('.conf'):
             conf_path = os.path.abspath(os.path.join(home, 'graphite', 'conf', section))
