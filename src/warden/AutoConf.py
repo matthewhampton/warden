@@ -21,8 +21,9 @@ def merge(left, right):
             left[key] = val
 
 def merge_conf(conf_path, conf_section):
-    if not os.path.exists(conf_path):
-        file_util.copy_file(conf_path + '.example', conf_path)
+    if os.path.exists(conf_path):
+        os.remove(conf_path)
+    file_util.copy_file(conf_path + '.example', conf_path)
     conf = ConfigObj(conf_path)
     merge(conf, conf_section)
     conf.write()

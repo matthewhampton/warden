@@ -28,8 +28,10 @@ DATABASES = {
     }
 }
 
+_warden_conf = get_warden_conf()
+
 # Make this unique, and don't share it with anybody.
-SENTRY_KEY = get_warden_conf()['gentry']['sentry_key']
+SENTRY_KEY = _warden_conf['gentry']['sentry_key']
 
 # Set this to false to require authentication
 SENTRY_PUBLIC = True
@@ -38,8 +40,8 @@ SENTRY_PUBLIC = True
 # but proxies may interfere with this.
 # SENTRY_URL_PREFIX = 'http://sentry.example.com'  # No trailing slash!
 
-SENTRY_WEB_HOST = '0.0.0.0'
-SENTRY_WEB_PORT = 9000
+SENTRY_WEB_HOST = _warden_conf['gentry']['gentry_host'] if 'gentry_host' in _warden_conf['gentry'] else '0.0.0.0'
+SENTRY_WEB_PORT = _warden_conf['gentry'].as_int('gentry_port') if 'gentry_port' in _warden_conf['gentry'] else 9000
 
 # Sentry mailer level
 SENTRY_MAIL_LEVEL = logging.ERROR

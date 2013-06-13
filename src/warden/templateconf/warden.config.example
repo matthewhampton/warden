@@ -5,6 +5,12 @@
 # DEBUG/INFO/WARNING/ERROR/CRITICAL
 loglevel = DEBUG
 
+[gentry]
+
+gentry_host = 0.0.0.0
+gentry_port = 9000
+
+
 [carbon.conf]
 
 [[cache]]
