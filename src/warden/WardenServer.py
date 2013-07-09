@@ -8,6 +8,7 @@ from CarbonManager import CarbonManager
 from GentryManager import GentryManager
 from DiamondManager import DiamondManager
 from SMTPForwarderManager import SMTPForwarderManager
+from warden import AutoConf
 from warden_logging import log
 from warden_utils import StartupException, relative_to_config_file
 import datetime
@@ -18,82 +19,36 @@ class WardenServer(object):
     The sub systems all run in separate threads and can be shutdown gracefully using sigint or stop commands.
     """
     
-    def __init__(self,
-                 warden_configuration_file,
-                 new_graphite_root=None,            # does the graphite root variable need to be changed
-                 carbon_config_path=None,           # where are the carbon config files
-                 diamond_config_path=None,          # where is the diamond config file
-                 gentry_settings_path=None,         # the name of the gentry settings module
-                 start_stmp_forwarder=True,
-                 smtp_forwarder_config_path=None,
-    ):
+    def __init__(self, home):
         """
         Load configuration object
         """
-
-        # Otherwise there may be a config argument
-       
-        if warden_configuration_file is None:
-            log.critical('No Warden configuration file supplied! Please use the "warden_configuration_file" parameter.')
-            sys.exit()
-
-        warden_configuration_file = os.path.abspath(os.path.expanduser(warden_configuration_file))
-        try:
-            with open(warden_configuration_file) as f: pass
-        except IOError:
-            log.error('The warden config file specified ("%s") does not exist!' % warden_configuration_file)
-            raise
-
-        self.configuration = ConfigParser.RawConfigParser()
-        self.configuration.read(warden_configuration_file)
+        AutoConf.autoconf(home)
+        self.configuration = AutoConf.get_warden_conf()
 
         # Setup logger
         # this is the stdout log level
-        loglevel = getattr(logging, self.configuration.get('warden','loglevel'))
+        loglevel = getattr(logging, self.configuration.get('warden', {}).get('loglevel', 'INFO'))
         log.setLevel(loglevel)
 
         self.startuptime = None
         self.shutdowntime = None
-
-        # pull new config values into configuration object
-
-        if new_graphite_root is not None:
-            self.configuration.set('carbon', 'graphite_root', str(new_graphite_root))
-
-        if carbon_config_path is not None:
-            self.configuration.set('carbon', 'configuration', str(carbon_config_path))
-
-        if diamond_config_path is not None:
-            self.configuration.set('diamond', 'configuration', str(diamond_config_path))
-
-        if gentry_settings_path is not None:
-            self.configuration.set('gentry', 'gentry_settings_py_path', str(gentry_settings_path))
-
-        if start_stmp_forwarder is False:
-            self.configuration.set('smtp_forwarder', 'enabled', str(start_stmp_forwarder))
-
-        if smtp_forwarder_config_path is not None:
-            self.configuration.set('smtp_forwarder', 'configuration', str(smtp_forwarder_config_path))
+        self.smtp_forwarder_enabled = str(self.configuration.get('smtp_forwarder', {}).get('enabled', '')).lower() in ('true', 't', '1', 'yes', 'y')
 
         log.info('Initialising Warden..')
         try:
             # initialise Carbon, daemon services are setup here, but the event reactor is not yet run
-            self.carbon = CarbonManager(
-                relative_to_config_file(warden_configuration_file, self.configuration.get('carbon', 'graphite_root')),
-                relative_to_config_file(warden_configuration_file, self.configuration.get('carbon', 'configuration')))
+            self.carbon = CarbonManager()
 
             # initialise Gentry, this will also perform database manipulation for Sentry
-            self.gentry = GentryManager(
-                relative_to_config_file(warden_configuration_file, self.configuration.get('gentry', 'gentry_settings_py_path')))
+            self.gentry = GentryManager()
 
             # initialise Diamond, not much is required here
-            self.diamond = DiamondManager(
-                relative_to_config_file(warden_configuration_file, self.configuration.get('diamond', 'diamond_root')),
-                relative_to_config_file(warden_configuration_file, self.configuration.get('diamond', 'configuration')),
-                getattr(logging, self.configuration.get('diamond','loglevel')))
+            self.diamond = DiamondManager()
 
-            if self.configuration.getboolean('smtp_forwarder', 'enabled'):
-                self.smtpforward = SMTPForwarderManager(dict(self.configuration.items('smtp_forwarder')))
+
+            if self.smtp_forwarder_enabled:
+                self.smtpforward = SMTPForwarderManager(dict(self.configuration.get('smtp_forwarder', {})))
 
         except Exception:
             log.exception("An error occured during initialisation.")
@@ -120,7 +75,7 @@ class WardenServer(object):
             self._wait_for_start(self.gentry)
             log.info('3. Gentry Started')
 
-            if self.configuration.getboolean('smtp_forwarder', 'enabled'):
+            if self.smtp_forwarder_enabled:
                 self.smtpforward.start()
                 log.info('4. Graphite SMTP forwarder Started')
 
@@ -153,7 +108,7 @@ class WardenServer(object):
 
         log.info('Shutting down Warden..')
 
-        if self.configuration.getboolean('smtp_forwarder', 'enabled'):
+        if self.smtp_forwarder_enabled:
             try:
                 self.smtpforward.stop()
                 log.info('4. Graphite SMTP forwarder stopped')
@@ -203,12 +158,12 @@ class WardenServer(object):
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='Warden configuration file parser')
-    parser.add_argument('--config', help="Path to the Warden configuration file.", dest='config')
+    parser = argparse.ArgumentParser(description='Warden Server')
+    parser.add_argument('home', nargs='?', help="the warden home folder")
     parser.add_argument('--pid-file', help="PID file for Daemon mode.  This causes Warden to run in Daemon mode", dest='pid_file')
     parser.add_argument('--stop', help='Stop Warden running in Daemon mode', action='store_true', default=False)
-    args, unknown  = parser.parse_known_args(sys.argv)
-    if not args.config and not args.stop:
+    args = parser.parse_args()
+    if not args.home and not args.stop:
         log.error('Warden not being stopped, and no config file specified - aborting')
         sys.exit(1)
     if args.stop and not args.pid_file:
@@ -236,20 +191,21 @@ def main():
         if os.path.exists(pid_file):
             os.remove(pid_file)
         return
-    warden_configuration_file = os.path.abspath(os.path.expanduser(args.config))
-    if not os.path.exists(warden_configuration_file):
-        log.error('The warden config file specified ("%s") does not exist!' % warden_configuration_file)
+    home = os.path.abspath(os.path.expanduser(args.home))
+    if not os.path.exists(home):
+        log.error('The warden home specified ("%s") does not exist!' % home)
         sys.exit(1)
+
     if args.pid_file:
         pid_file = os.path.abspath(os.path.expanduser(args.pid_file))
         import daemon
         from lockfile import pidlockfile
         context = daemon.DaemonContext(pidfile=pidlockfile.PIDLockFile(pid_file))
         with context:
-            warden_server = WardenServer(warden_configuration_file = warden_configuration_file)
+            warden_server = WardenServer(home)
             warden_server.start()
         return
-    warden_server = WardenServer(warden_configuration_file = warden_configuration_file)
+    warden_server = WardenServer(home)
     warden_server.start()
 
 if __name__ == '__main__':

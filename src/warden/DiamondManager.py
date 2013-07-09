@@ -20,9 +20,11 @@ class DiamondManager:
             diamond_root = normalize_path(diamond_root)
             os.environ['DIAMOND_ROOT'] = diamond_root
             log.debug('$DIAMOND_ROOT=%s' % os.environ['DIAMOND_ROOT'])
+        else:
+            diamond_root = os.environ['DIAMOND_ROOT']
 
         if diamond_conf_file is None:
-            raise ValueError('DiamondManager: Path to diamond.conf was not supplied!')
+            diamond_conf_file = os.path.join(diamond_root, 'diamond.conf')
 
         diamond_conf_file = normalize_path(diamond_conf_file)
 

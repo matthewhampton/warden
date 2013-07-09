@@ -229,6 +229,7 @@ def main():
             setattr(args, dest, prompt('Enter %s:' % (help), password='password' in arg))
 
     home = args.home[0]
+    home = os.path.abspath(os.path.expanduser(home))
     os.environ['WARDEN_HOME'] = home
 
     dir_util.copy_tree(os.path.join(os.path.dirname(__file__), 'templateconf'), home)

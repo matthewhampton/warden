@@ -30,13 +30,16 @@ def merge_conf(conf_path, conf_section, wardenconf=None, autoconffunc=None):
     merge(conf, conf_section)
     conf.write()
 
-def get_warden_conf():
+def get_warden_conf_file():
     warden_configuration_file = os.path.join(os.environ['WARDEN_HOME'], 'warden.config')
 
     if not os.path.exists(warden_configuration_file):
         file_util.copy_file(warden_configuration_file + '.example', warden_configuration_file)
 
-    return ConfigObj(warden_configuration_file)
+    return warden_configuration_file
+
+def get_warden_conf():
+    return ConfigObj(get_warden_conf_file())
 
 def home_path(*args):
     return os.path.abspath(os.path.join(os.environ['WARDEN_HOME'], *args))
@@ -53,10 +56,13 @@ def diamond_conf(wardenconf, conf):
     conf['handlers']['GraphitePickleHandler']['host'] = 'localhost'
     conf['handlers']['GraphitePickleHandler']['port'] = 2024
 
-
-def autoconf(home):
+def setenv(home):
     os.environ['WARDEN_HOME'] = home
     os.environ['GRAPHITE_ROOT'] = home_path('graphite')
+    os.environ['DIAMOND_ROOT'] = home_path('diamond')
+
+def autoconf(home):
+    setenv(home)
 
     config = get_warden_conf()
 
