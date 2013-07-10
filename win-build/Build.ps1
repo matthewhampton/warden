@@ -1,9 +1,15 @@
-$buildDir = "$pwd\build"
+$buildDir = "$env:temp\warden-build"
 $cacheDir = "$pwd\cache"
+$tempDir = "$env:temp\warden"
 
 if (!(Test-Path  ($buildDir)))
 {
     New-Item $buildDir -type directory
+}
+
+if (!(Test-Path  ($tempDir)))
+{
+    New-Item $tempDir -type directory
 }
 
 if (!(Test-Path  ($cacheDir)))
@@ -27,7 +33,8 @@ $pythonExe = "$buildDir\Python27\python.exe"
 if (!(Test-Path  ($pythonExe)))
 {
     DownloadFile "http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi" "python-2.7.5.msi"
-    $exitCode = (Start-Process -FilePath "msiexec.exe" -ArgumentList "/i","$cacheDir\python-2.7.5.msi","TARGETDIR=$buildDir\Python27","/passive" -Wait -Passthru).ExitCode
+    Copy-Item "$cacheDir\python-2.7.5.msi" "$tempDir"
+    $exitCode = (Start-Process -FilePath "msiexec.exe" -ArgumentList "/i","$tempDir\python-2.7.5.msi","TARGETDIR=$buildDir\Python27","/passive" -Wait -Passthru).ExitCode
     Write-Host "Exit code was: $exitCode"
 }
 
@@ -49,7 +56,10 @@ if (!(Test-Path  ($pipExe)))
 $wardenInstallerExe = "$buildDir\Python27\Scripts\warden_install.exe"
 if (!(Test-Path  ($wardenInstallerExe)))
 {
-    $exitCode = (Start-Process -FilePath $pipExe -ArgumentList "install",".." -Wait -Passthru).ExitCode
+	$wardenSource = [System.IO.Path]::GetFullPath("$pwd\..")
+	Write-Host "Pip is $pipExe"
+	Write-Host "Warden source location is $wardenSource"
+    $exitCode = (Start-Process -FilePath $pipExe -ArgumentList "install","$wardenSource" -Wait -Passthru).ExitCode
     Write-Host "Exit code was: $exitCode"
 }
 
@@ -60,6 +70,11 @@ if (!(Test-Path  ($wardenDir)))
     Set-Item -path env:Path -value ($env:Path + ";$buildDir\Python27;$buildDir\Python27\Scripts")
     Set-Item -path env:PIP_DOWNLOAD_CACHE -value ("$cacheDir")
 
-    $exitCode = (Start-Process -FilePath $wardenInstallerExe -ArgumentList "$wardenDir" -Wait -Passthru).ExitCode
+    $exitCode = (Start-Process -FilePath $wardenInstallerExe -Wait -Passthru).ExitCode
     Write-Host "Exit code was: $exitCode"
+}
+
+if (Test-Path  ($tempDir))
+{
+    Remove-Item -Recurse -Force $tempDir
 }

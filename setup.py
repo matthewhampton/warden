@@ -38,7 +38,7 @@ Warden uses Diamond to collect stats. Using Diamond's plug-in Collectors archite
         'gentry.management.commands'],
     package_dir={'' : 'src'},
     package_data={
-        'warden': [os.path.join('templateconf','*')],
+        'warden': [os.path.join('templateconf','*.example')],
         'warden.installer': ['warden_requirements*.txt']},
     scripts=glob('bin/*'),
     zip_safe = False,
