@@ -53,13 +53,13 @@ if (!(Test-Path  ($pipExe)))
     Write-Host "Exit code was: $exitCode"
 }
 
-$wardenInstallerExe = "$buildDir\Python27\Scripts\warden_install.exe"
+$wardenInstallerExe = "$buildDir\Scripts\warden_install.exe"
 if (!(Test-Path  ($wardenInstallerExe)))
 {
 	$wardenSource = [System.IO.Path]::GetFullPath("$pwd\..")
 	Write-Host "Pip is $pipExe"
 	Write-Host "Warden source location is $wardenSource"
-    $exitCode = (Start-Process -FilePath $pipExe -ArgumentList "install","$wardenSource" -Wait -Passthru).ExitCode
+    $exitCode = (Start-Process -FilePath $pipExe -ArgumentList "install","$wardenSource","--install-option=--install-scripts=$buildDir\Scripts" -Wait -Passthru).ExitCode
     Write-Host "Exit code was: $exitCode"
 }
 
