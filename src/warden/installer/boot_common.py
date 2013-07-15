@@ -43,24 +43,18 @@
 
 import sys
 
-pythonhome = sys.executable.rsplit('\\', 1)[0]
+pythonhome = sys.executable.rsplit('\\', 1)[0] + '\\'
 
-print sys.path
-sys.path = \
-['',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\site-packages\\distribute-0.6.49-py2.7.egg',
- 'C:\\Users\\ADMINI~1\\AppData\\Local \\Temp\\warden-build\\Python27\\lib\\site-packages\\pip-1.3.1-py2.7.egg',
- 'e:\\work\\git\\pipping-easy-install', 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\python27.zip',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\DLLs',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\plat-win',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\lib-tk',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\site-packages',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\site-packages\\win32',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\site-packages\\win32\\lib',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\site-packages\\Pythonwin',
- 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\warden-build\\Python27\\lib\\site-packages\\setuptools-0.6c11-py2.7.egg-info']
+sys.path = [pythonhome + x for x in [
+ 'python27.zip',
+ 'DLLs',
+ 'lib',
+ 'lib\\plat-win',
+ 'lib\\lib-tk',
+ '',
+ ]]
+
+import site
 
 if sys.frozen == "windows_exe":
     class Stderr(object):

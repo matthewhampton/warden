@@ -4,7 +4,7 @@ import imp
 import stat
 
 __author__ = 'matth'
-
+import sys
 import os
 import py2exe
 from py2exe.build_exe import py2exe as build_exe
@@ -20,7 +20,7 @@ class my_py2exe(build_exe):
         return super(my_py2exe, self).get_boot_script(boot_type)
 
     def build_exes(self):
-        self.dist_dir = os.path.abspath('C:\\Users\\Administrator\\AppData\\Local\\Temp\\warden-build\\Python27')
+        self.dist_dir = os.path.abspath(sys.prefix)
         self.lib_dir = self.dist_dir
         self.distribution.zipfile = 'Dummy'
         self.bundle_files =  3
@@ -30,6 +30,8 @@ class my_py2exe(build_exe):
             dst = self.build_executable(target, self.get_console_template(),
                                     arcname, target.script)
             print dst
+
+
 
     def build_executable(self, target, template, arcname, script, vars={}):
         # Build an executable for the target
