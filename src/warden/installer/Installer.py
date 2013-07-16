@@ -5,6 +5,7 @@ import sys
 import distutils.sysconfig
 import pkg_resources
 from pip.req import parse_requirements
+from distutils.dist import Distribution
 
 def get_requirements(requirements_path=None):
     requirements_path = requirements_path or os.path.join(os.path.dirname(__file__),
@@ -70,6 +71,9 @@ def install_libraries(run=None, pip=None, lib=None, scripts=None, prefix=None, d
         pipping_easy_install('pycairo')
         pipping_easy_install('pywin32')
         pipping_easy_install('zope.interface')
+        pipping_easy_install('py2exe')
+        import ExeBuilder
+        ExeBuilder.my_py2exe(Distribution()).build_exes(scripts, prefix)
     else:
         pip_install('pycairo')
         pip_install("python-daemon")

@@ -1,4 +1,5 @@
 #http://github.com/matthewhampton/pipping-easy-install/tarball/master#egg=pipping-easy-install
 file://e:\work\git\pipping-easy-install#egg=pipping-easy-install
 pywin32
+py2exe
 -r warden_requirements_common.txt
