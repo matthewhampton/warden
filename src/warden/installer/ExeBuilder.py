@@ -11,6 +11,8 @@ from py2exe.build_exe import py2exe as build_exe
 from py2exe.build_exe import FixupTargets, ensure_unicode, python_dll, RT_BITMAP, RT_MANIFEST
 from distutils.dist import Distribution
 
+SCRIPTS = ['warden', 'warden-init', 'warden-install']
+
 class my_py2exe(build_exe):
     def get_boot_script(self, boot_type):
         if boot_type == 'common':
@@ -26,7 +28,11 @@ class my_py2exe(build_exe):
         self.bundle_files =  3
         self.skip_archive = True
         arcname = '.'
-        for target in FixupTargets(['hello.py'], 'script'):
+        for target in FixupTargets([{
+                                       'script': os.path.join(self.dist_dir, 'Scripts', '%s-script.py' % s),
+                                        'dest_base': s
+                                    } for s in SCRIPTS], 'script'):
+
             dst = self.build_executable(target, self.get_console_template(),
                                     arcname, target.script)
             print dst

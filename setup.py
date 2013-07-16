@@ -49,8 +49,8 @@ Warden uses Diamond to collect stats. Using Diamond's plug-in Collectors archite
     entry_points     = {
           'console_scripts': [
               'warden = warden.WardenServer:main',
-              'warden_install = warden.installer.Installer:main',
-              'warden_init = warden.warden_init:main'
+              'warden-install = warden.installer.Installer:main',
+              'warden-init = warden.warden_init:main'
           ]
     },
     classifiers      = [

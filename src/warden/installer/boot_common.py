@@ -43,14 +43,14 @@
 
 import sys
 
-pythonhome = sys.executable.rsplit('\\', 1)[0] + '\\'
+pythonhome = sys.prefix[:-1] if sys.prefix.endswith('\\') else sys.prefix
 
 sys.path = [pythonhome + x for x in [
- 'python27.zip',
- 'DLLs',
- 'lib',
- 'lib\\plat-win',
- 'lib\\lib-tk',
+ '\\python27.zip',
+ '\\DLLs',
+ '\\lib',
+ '\\lib\\plat-win',
+ '\\lib\\lib-tk',
  '',
  ]]
 
