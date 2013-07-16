@@ -8,9 +8,14 @@ import sys
 import os
 import py2exe
 from py2exe.build_exe import py2exe as build_exe
-from py2exe.build_exe import FixupTargets, ensure_unicode, python_dll, RT_BITMAP, RT_MANIFEST
+from py2exe.build_exe import FixupTargets, Target, ensure_unicode, python_dll, RT_BITMAP, RT_MANIFEST
 
 SCRIPTS = ['warden', 'warden-init', 'warden-install']
+SERVICE = Target(
+        script = os.path.join(os.path.dirname(__file__), 'boot_warden_svc.py'),
+        dest_base = 'warden-svc'
+    )
+
 
 class my_py2exe(build_exe):
     def get_boot_script(self, boot_type):
@@ -18,7 +23,7 @@ class my_py2exe(build_exe):
 
             return os.path.join(os.path.dirname(__file__),
                                 "boot_" + boot_type + ".py")
-        return super(my_py2exe, self).get_boot_script(boot_type)
+        return build_exe.get_boot_script(self, boot_type)
 
     def build_exes(self, scripts_dir, dest_dir):
         self.dist_dir = dest_dir
@@ -35,6 +40,8 @@ class my_py2exe(build_exe):
             dst = self.build_executable(target, self.get_console_template(),
                                     arcname, target.script)
             print dst
+        self.build_executable( SERVICE, self.get_console_template(), arcname, SERVICE.script)
+
 
 
 
@@ -185,3 +192,9 @@ class my_py2exe(build_exe):
             open(exe_path, "a+b").write(zip_data)
 
         return exe_path
+
+if __name__ == '__main__':
+    from distutils.dist import Distribution
+    dest_dir = sys.prefix
+    scripts_dir = os.path.join(dest_dir, 'Scripts')
+    my_py2exe(Distribution()).build_exes(scripts_dir, dest_dir)
