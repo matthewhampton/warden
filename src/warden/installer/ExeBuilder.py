@@ -12,8 +12,13 @@ from py2exe.build_exe import FixupTargets, Target, ensure_unicode, python_dll, R
 
 SCRIPTS = ['warden', 'warden-init', 'warden-install']
 SERVICE = Target(
-        script = os.path.join(os.path.dirname(__file__), 'boot_warden_svc.py'),
-        dest_base = 'warden-svc'
+        # used for the versioninfo resource
+        description = "The windows service for the Warden monitoring and metrics framework",
+        # what to build. For a service, the module name (not the
+        # filename) must be specified!
+        modules = ["warden.Win32Service"],
+        cmdline_style='custom',
+        dest_base = 'warden-svc',
     )
 
 
@@ -29,7 +34,7 @@ class my_py2exe(build_exe):
         self.dist_dir = dest_dir
         self.lib_dir = self.dist_dir
         self.distribution.zipfile = 'Dummy'
-        self.bundle_files =  3
+        self.bundle_files = 3
         self.skip_archive = True
         arcname = '.'
         for target in FixupTargets([{
@@ -39,11 +44,9 @@ class my_py2exe(build_exe):
 
             dst = self.build_executable(target, self.get_console_template(),
                                     arcname, target.script)
-            print dst
-        self.build_executable( SERVICE, self.get_console_template(), arcname, SERVICE.script)
 
-
-
+        dst = self.build_service(SERVICE, self.get_service_template(),
+                                 arcname)
 
     def build_executable(self, target, template, arcname, script, vars={}):
         # Build an executable for the target
