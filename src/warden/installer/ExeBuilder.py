@@ -40,14 +40,14 @@ class my_py2exe(build_exe):
 
 import sys
 
-pythonhome = sys.prefix[:-1] if sys.prefix.endswith('\\') else sys.prefix
+pythonhome = sys.prefix[:-1] if sys.prefix.endswith('\\\\') else sys.prefix
 
 sys.path = [pythonhome + x for x in [
-    '\\python27.zip',
-    '\\DLLs',
-    '\\lib',
-    '\\lib\\plat-win',
-    '\\lib\\lib-tk',
+    '\\\\python27.zip',
+    '\\\\DLLs',
+    '\\\\lib',
+    '\\\\lib\\\\plat-win',
+    '\\\\lib\\\\lib-tk',
     '',
     ]]
 
@@ -55,13 +55,10 @@ import site
 
 """ + src
 
-            (f, name) = tempfile.mkstemp(suffix='wardenboot.py', text=True)
-            try:
+            (fd, name) = tempfile.mkstemp(suffix='wardenboot.py', text=True)
+            self._tmp_file_list.append(name)
+            with os.fdopen(fd, 'w') as f:
                 f.write(src)
-            finally:
-                self._tmp_file_list.append(name)
-                f.close()
-
 
             return name
         return bootscript
@@ -88,7 +85,7 @@ import site
             for f in self._tmp_file_list:
                 if os.path.exists(f):
                     try:
-                        os.unlink(f)
+                        pass #os.unlink(f)
                     except:
                         pass
 
