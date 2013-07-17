@@ -72,8 +72,6 @@ def install_libraries(run=None, pip=None, lib=None, scripts=None, prefix=None, d
         pipping_easy_install('pywin32')
         pipping_easy_install('zope.interface')
         pipping_easy_install('py2exe')
-        import ExeBuilder
-        ExeBuilder.my_py2exe(Distribution()).build_exes(scripts, prefix)
     else:
         pip_install('pycairo')
         pip_install("python-daemon")

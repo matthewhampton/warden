@@ -72,6 +72,9 @@ if (!(Test-Path  ($wardenDir)))
 
     $exitCode = (Start-Process -FilePath $wardenInstallerExe -Wait -Passthru).ExitCode
     Write-Host "Exit code was: $exitCode"
+
+    $exitCode = (Start-Process -FilePath "$buildDir\Python27\python.exe" -ArgumentList "-m","warden.installer.ExeBuilder" -Wait -Passthru).ExitCode
+    Write-Host "Exit code was: $exitCode"
 }
 
 if (Test-Path  ($tempDir))
