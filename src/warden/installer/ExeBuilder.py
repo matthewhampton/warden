@@ -10,7 +10,7 @@ from py2exe.build_exe import py2exe as build_exe
 from py2exe.build_exe import FixupTargets, Target
 import tempfile
 
-SCRIPTS = ['warden', 'warden-init', 'warden-install']
+SCRIPTS = ['warden', 'warden-init']
 SERVICE = Target(
         # used for the versioninfo resource
         description = "The windows service for the Warden monitoring and metrics framework",
