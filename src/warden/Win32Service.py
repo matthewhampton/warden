@@ -8,12 +8,12 @@ import win32con
 import win32event
 import win32evtlogutil
 import os, sys, string, time
-from warden import WardenServer
+#from warden import WardenServer
 
 class WardenService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "PythonWarden"
-    _svc_display_name_ = "Python Warden"
-    _svc_description_ = "The windows service for the Python Warden monitoring and metrics framework"
+    _svc_name_ = "WardenPython"
+    _svc_display_name_ = "Warden Service"
+    _svc_description_ = "The windows service for the Warden monitoring and metrics framework"
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -73,7 +73,7 @@ def HandleCommandLine(argv=None):
         print 'ERROR: -h option required'
         usage()
 
-    win32serviceutil.HandleCommandLine(WardenService, customInstallOptions=customInstallOptions, customOptionHandler=HandleCustomOptions)
+    win32serviceutil.HandleCommandLine(WardenService, serviceClassString='warden.Win32Service.WardenService', customInstallOptions=customInstallOptions, customOptionHandler=HandleCustomOptions)
 
 if __name__ == '__main__':
     HandleCommandLine()
