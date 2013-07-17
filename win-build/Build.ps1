@@ -1,4 +1,4 @@
-$buildDir = "$env:temp\warden-build"
+$buildDir = "C:\warden-build"
 $cacheDir = "$pwd\cache"
 $tempDir = "$env:temp\warden"
 
