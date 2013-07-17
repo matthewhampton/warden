@@ -35,19 +35,21 @@ class my_py2exe(build_exe):
             with open(bootscript, 'r') as f:
                 src = f.read()
 
-            src = """
+            src = r"""
 # Fix up the system path so that we can run off a normal python install:
 
 import sys
 
-pythonhome = sys.prefix[:-1] if sys.prefix.endswith('\\\\') else sys.prefix
+sys.prefix = (sys.prefix[:-1] if sys.prefix.endswith('\\') else sys.prefix) + '\\Python27'
+sys.exec_prefix = sys.prefix
+pythonhome = sys.prefix
 
 sys.path = [pythonhome + x for x in [
-    '\\\\python27.zip',
-    '\\\\DLLs',
-    '\\\\lib',
-    '\\\\lib\\\\plat-win',
-    '\\\\lib\\\\lib-tk',
+    '\\python27.zip',
+    '\\DLLs',
+    '\\lib',
+    '\\lib\\plat-win',
+    '\\lib\\lib-tk',
     '',
     ]]
 
@@ -94,4 +96,4 @@ if __name__ == '__main__':
     from distutils.dist import Distribution
     dest_dir = sys.prefix
     scripts_dir = os.path.join(dest_dir, 'Scripts')
-    my_py2exe(Distribution()).build_exes(scripts_dir, dest_dir)
+    my_py2exe(Distribution()).build_exes(scripts_dir, os.path.dirname(dest_dir))
