@@ -9,6 +9,7 @@ import os
 from py2exe.build_exe import py2exe as build_exe
 from py2exe.build_exe import FixupTargets, Target
 import tempfile
+import shutil
 
 SCRIPTS = ['warden', 'warden-init']
 SERVICE = Target(
@@ -90,6 +91,10 @@ import site
                         os.remove(f)
                     except:
                         pass
+        shutil.copy2(os.path.join(sys.prefix, 'Python27.dll'), dest_dir)
+        shutil.copy2(os.path.join(sys.prefix, 'Lib', 'site-packages', 'pywin32_system32', 'pythoncom27.dll'), os.path.join(dest_dir, 'Python27'))
+        shutil.copy2(os.path.join(sys.prefix, 'Lib', 'site-packages', 'pywin32_system32', 'pythoncomloader27.dll'), os.path.join(dest_dir, 'Python27'))
+        shutil.copy2(os.path.join(sys.prefix, 'Lib', 'site-packages', 'pywin32_system32', 'pywintypes27.dll'), os.path.join(dest_dir, 'Python27'))
 
 
 if __name__ == '__main__':
