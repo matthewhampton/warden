@@ -85,7 +85,7 @@ import site
             for f in self._tmp_file_list:
                 if os.path.exists(f):
                     try:
-                        pass #os.unlink(f)
+                        os.remove(f)
                     except:
                         pass
 
