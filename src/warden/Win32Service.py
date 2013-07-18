@@ -12,22 +12,30 @@ import servicemanager
 from warden import WardenServer, AutoConf
 
 class WardenService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "WardenPython"
+    _svc_name_ = "PythonWarden"
     _svc_display_name_ = "Warden Service"
     _svc_description_ = "The windows service for the Warden monitoring and metrics framework"
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+        self.warden_server = None
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        if self.warden_server:
+            servicemanager.LogInfoMsg("Warden shutting down...")
+            self.warden_server._shutdown()
+            servicemanager.LogInfoMsg("Warden shut down complete")
         win32event.SetEvent(self.hWaitStop)
 
     def SvcDoRun(self):
         home = win32serviceutil.GetServiceCustomOption(WardenService._svc_name_, 'WARDEN_HOME', defaultValue=None)
         home = AutoConf.get_home(home)
-        servicemanager.LogInfoMsg("Starting Warden with home directory: %s" % home)
+        servicemanager.LogInfoMsg("Warden starting up (home directory: %s) ..." % home)
+        self.warden_server = WardenServer.WardenServer(home)
+        self.warden_server._startup()
+        servicemanager.LogInfoMsg("Warden start up complete")
         win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
 
 def HandleCustomOptions(*args, **kwargs):
