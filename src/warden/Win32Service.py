@@ -8,7 +8,8 @@ import win32con
 import win32event
 import win32evtlogutil
 import os, sys, string, time
-#from warden import WardenServer
+import servicemanager
+from warden import WardenServer, AutoConf
 
 class WardenService(win32serviceutil.ServiceFramework):
     _svc_name_ = "WardenPython"
@@ -24,10 +25,15 @@ class WardenService(win32serviceutil.ServiceFramework):
         win32event.SetEvent(self.hWaitStop)
 
     def SvcDoRun(self):
+        home = win32serviceutil.GetServiceCustomOption(WardenService._svc_name_, 'WARDEN_HOME', defaultValue=None)
+        home = AutoConf.get_home(home)
+        servicemanager.LogInfoMsg("Starting Warden with home directory: %s" % home)
         win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
 
 def HandleCustomOptions(*args, **kwargs):
-    print "Custom args=%s, kwargs=%s" % (args[0], kwargs)
+    opts = dict(args[0]) if args else {}
+    home = AutoConf.get_home(opts.get('-h', None))
+    win32serviceutil.SetServiceCustomOption(WardenService._svc_name_, 'WARDEN_HOME', home)
 
 def usage():
     try:
@@ -67,10 +73,6 @@ def HandleCommandLine(argv=None):
         usage()
 
     if len(args)<1:
-        usage()
-
-    if args[0] in ("install", "update") and '-h' not in dict(opts):
-        print 'ERROR: -h option required'
         usage()
 
     win32serviceutil.HandleCommandLine(WardenService, serviceClassString='warden.Win32Service.WardenService', customInstallOptions=customInstallOptions, customOptionHandler=HandleCustomOptions)

@@ -4,6 +4,7 @@ import os
 from distutils import file_util
 from configobj import ConfigObj, Section
 from warden_logging import log
+import sys
 
 def merge(left, right):
     """
@@ -61,6 +62,18 @@ def setenv(home):
     os.environ['GRAPHITE_ROOT'] = home_path('graphite')
     os.environ['DIAMOND_ROOT'] = home_path('diamond')
 
+def get_default_home():
+    if 'win' in sys.platform:
+        program_data = os.environ.get('ALLUSERSPROFILE', None)
+        if not program_data:
+            raise ValueError('Unable to determine default warden home directory as the %ALLUSERSPROFILE% environment variable is not available.')
+        return os.path.join(program_data, 'PythonWarden')
+    else:
+        return '/srv/warden'
+
+def get_home(homearg):
+    return os.path.abspath(os.path.expanduser(homearg)) if homearg else get_default_home()
+
 def autoconf(home):
     setenv(home)
 
@@ -87,9 +100,9 @@ def autoconf(home):
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Warden auto conf script')
-    parser.add_argument('home', nargs=1, help="the warden home folder")
+    parser.add_argument('home', nargs='?', help="the warden home folder")
     args = parser.parse_args()
-    autoconf(args.home[0])
+    autoconf(get_home(args.home))
 
 if __name__ == '__main__':
     main()

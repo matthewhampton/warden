@@ -165,9 +165,6 @@ def main():
     parser.add_argument('--pid-file', help="PID file for Daemon mode.  This causes Warden to run in Daemon mode", dest='pid_file')
     parser.add_argument('--stop', help='Stop Warden running in Daemon mode', action='store_true', default=False)
     args = parser.parse_args()
-    if not args.home and not args.stop:
-        log.error('Warden not being stopped, and no config file specified - aborting')
-        sys.exit(1)
     if args.stop and not args.pid_file:
         log.error('Warden cannot stop daemon mode unless the pid-file is specified')
         sys.exit(1)
@@ -193,7 +190,7 @@ def main():
         if os.path.exists(pid_file):
             os.remove(pid_file)
         return
-    home = os.path.abspath(os.path.expanduser(args.home))
+    home = AutoConf.get_home(args.home)
     if not os.path.exists(home):
         log.error('The warden home specified ("%s") does not exist!' % home)
         sys.exit(1)

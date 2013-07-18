@@ -8,7 +8,7 @@ AFTER A NEW INSTALL OF WARDEN (using setup.py) we need to get the system ready f
             check if database exists... clear...syncdb...migrate etc..
 """
 import getpass
-from warden.AutoConf import autoconf
+from warden.AutoConf import autoconf, get_home
 from warden_logging import log
 import os
 import sys
@@ -210,7 +210,7 @@ def main():
     import argparse
     import ConfigParser
     parser = argparse.ArgumentParser(description='Warden init script')
-    parser.add_argument('home', nargs=1, help="the warden home folder")
+    parser.add_argument('home', nargs='?', help="the warden home folder")
 
     prompt_args = [
         ('first-project', "the first sentry project", 'first_project'),
@@ -228,8 +228,10 @@ def main():
         if not getattr(args, dest, None):
             setattr(args, dest, prompt('Enter %s:' % (help), password='password' in arg))
 
-    home = args.home[0]
-    home = os.path.abspath(os.path.expanduser(home))
+    home = get_home(args.home)
+    if not os.path.exists(home):
+        os.makedirs(home)
+
     os.environ['WARDEN_HOME'] = home
 
     dir_util.copy_tree(os.path.join(os.path.dirname(__file__), 'templateconf'), home)
