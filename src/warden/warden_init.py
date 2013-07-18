@@ -8,6 +8,7 @@ AFTER A NEW INSTALL OF WARDEN (using setup.py) we need to get the system ready f
             check if database exists... clear...syncdb...migrate etc..
 """
 import getpass
+import subprocess
 from warden.AutoConf import autoconf, get_home
 from warden_logging import log
 import os
@@ -206,6 +207,17 @@ def prompt(text, default='', validate=None, password=False):
                     value = None
     return value
 
+def create_service(home):
+    if 'win' in sys.platform:
+        if hasattr(sys, "frozen"):
+            svc_exe = os.path.join(os.path.dirname(sys.executable), 'warden-svc.exe')
+            if os.path.exists(svc_exe):
+                log.info('Attempting to create service')
+                log.info('Output: \n%s',
+                    subprocess.check_output([svc_exe, '-h', home, 'install']))
+    else:
+        pass
+
 def main():
     import argparse
     import ConfigParser
@@ -241,6 +253,8 @@ def main():
     suser = (args.super_user, args.super_password, args.super_email)
 
     setup(home, suser, args.first_project)
+
+    create_service(home)
 
 if __name__ == '__main__':
     main()
